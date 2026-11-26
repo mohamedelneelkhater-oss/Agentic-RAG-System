@@ -1,0 +1,16 @@
+id,category,question,source,keywords,answerable
+1,Direct (PDF),What is overfitting and how can it be reduced?,ml_lecture_notes.pdf,"['training data', 'regularization']",True
+2,Direct (PDF),What is the formula for precision?,ml_lecture_notes.pdf,"['tp', 'fp']",True
+3,Direct (PDF),What does the learning rate control in gradient descent?,ml_lecture_notes.pdf,['step size'],True
+4,Direct (PDF),Which activation functions are used in neural networks?,ml_lecture_notes.pdf,"['relu', 'sigmoid', 'softmax']",True
+5,Direct (TXT),Who is the instructor of the Machine Learning course?,ml_syllabus.txt,['sara hassan'],True
+6,Direct (TXT),When are the Python course office hours?,python_syllabus.txt,['sunday'],True
+7,Direct (DOCX),What are the four pillars of OOP in Python?,python_lectures.docx,"['inheritance', 'encapsulation', 'polymorphism', 'abstraction']",True
+8,Direct (CSV),What is a primary key in SQL?,sql_glossary.csv,['unique'],True
+9,Direct (CSV),What does ACID stand for in databases?,sql_glossary.csv,"['atomicity', 'consistency', 'isolation', 'durability']",True
+10,Vague (Rewrite),how can i stop my model from memorizing the training data?,ml_lecture_notes.pdf,['regularization'],True
+11,Vague (Rewrite),how to remove repeated rows from query results?,sql_glossary.csv,['distinct'],True
+12,Multi-Step,What is the difference between a list and a tuple in Python?,python_lectures.docx,"['mutable', 'immutable']",True
+13,Agent Tool,How many files and total chunks are in the dataset?,Knowledge Base Catalog,"['6 files', '3 courses']",True
+14,Unanswerable,What is the capital of France?,,[],False
+15,Unanswerable,What is the final exam date of the SQL course?,,[],False

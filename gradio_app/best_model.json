@@ -1,0 +1,43 @@
+{
+  "best_model": "flan-t5-small",
+  "available_models": [
+    "flan-t5-small",
+    "flan-t5-base",
+    "qwen2.5-0.5b-instruct"
+  ],
+  "ranking": [
+    {
+      "model": "flan-t5-small",
+      "mode": "agentic_corrective",
+      "quality": 0.7333,
+      "context_hit": 1.0,
+      "avg_latency": 1.1524,
+      "avg_rewrites": 0.4,
+      "refusal_rate": 1.0,
+      "speed_score": 1.0,
+      "final_score": 0.7867
+    },
+    {
+      "model": "flan-t5-base",
+      "mode": "agentic_corrective",
+      "quality": 0.8667,
+      "context_hit": 0.8462,
+      "avg_latency": 3.1016,
+      "avg_rewrites": 0.6,
+      "refusal_rate": 1.0,
+      "speed_score": 0.3715,
+      "final_score": 0.7676
+    },
+    {
+      "model": "qwen2.5-0.5b-instruct",
+      "mode": "agentic_corrective",
+      "quality": 0.8667,
+      "context_hit": 1.0,
+      "avg_latency": 12.6936,
+      "avg_rewrites": 0.2667,
+      "refusal_rate": 0.5,
+      "speed_score": 0.0908,
+      "final_score": 0.7115
+    }
+  ]
+}
