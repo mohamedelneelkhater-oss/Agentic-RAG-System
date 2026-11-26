@@ -1,61 +1,39 @@
-# Agentic & Corrective RAG System for Course Q&A
-
-An end-to-end **Agentic & Corrective Retrieval-Augmented Generation (RAG)** question-answering system designed to run efficiently on CPU across multi-format course materials (`PDF`, `DOCX`, `CSV`, and `TXT`). The system combines semantic retrieval with **ChromaDB**, relevance grading, query rewriting, safe refusal on unanswerable queries, multi-step decomposition, lightweight helper tools, benchmark evaluation, and an interactive **Gradio** web application.
-
----
-
-## Key Features
-
-* **Agentic Routing & Strategy Planning:** Dynamically chooses between direct corrective RAG, multi-step decomposition for comparative/compound questions, summarization, dataset analytics, or safe calculation before querying evidence.
-* **Corrective RAG Loop:** Retrieves top-`k` chunks, grades relevance against a similarity threshold (`0.20`) and an LLM grader (`yes`/`no`), rewrites queries when no verified chunks pass (up to `max_rewrites=2`), and safely refuses (`UNANSWERED`) when evidence is insufficient.
-* **Multi-Format Course Ingestion:** Indexes `PDF`, `DOCX`, `CSV`, and `TXT` files into a persistent **ChromaDB** vector store (`cosine` similarity) using `sentence-transformers/all-MiniLM-L6-v2` embeddings on CPU.
-* **Multi-Model CPU Benchmarking:** Compares `standard` retrieval against `agentic_corrective` across lightweight models (`flan-t5-small`, `flan-t5-base`, and `qwen2.5-0.5b-instruct`) on a 15-question evaluation suite.
-* **Interactive Gradio UI & Docker Ready:** Includes a 3-tab Gradio interface for live Q&A, dataset inspection & document upload, and live test-set benchmarking, plus local runner and Dockerfile support.
-
----
-
-## Architecture Overview
-
-1. **Ingestion & Chunking:** Loads course documents across `Machine Learning`, `Python Programming`, and `SQL and Databases` (6 source files, 29 chunks, max chunk length `500` chars with `1`-sentence overlap), storing metadata (`course`, `file`, `type`, `page`, `path`).
-2. **Vector Indexing:** Encodes chunks with `sentence-transformers/all-MiniLM-L6-v2` (`384` dimensions, normalized on `cpu`) and persists them in `./chroma_db`.
-3. **Agent & Corrective Execution:**
-   * **Tools:** Safe AST-based `calculator_tool`, catalog/dataset `data_analysis_tool`, `summarizer_tool`, and `multi_step_rag` decomposition.
-   * **Grading & Rewrite:** Filters candidate chunks with a strict LLM grader (`do_sample=False`), rewrites keywords on zero verified chunks, and returns cited sources and execution traces.
-4. **Evaluation & Selection:** Scores models on a 15-question test set (`test_set.csv`) using keyword recall for answerable questions, refusal accuracy for unanswerable questions, context hit rate, latency, and a weighted score (`0.80 * quality + 0.20 * speed_score`).
-
----
-
-## Benchmark Results (15-Question Test Set)
-
-### Standard vs. Agentic Corrective RAG
-
-| Model | Mode | Quality | Context Hit | Avg Latency | Avg Rewrites | Refusal Rate |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| `flan-t5-base` | `agentic_corrective` | `0.867` | `0.846` | `3.102s` | `0.600` | `1.000` |
-| `flan-t5-base` | `standard` | `0.800` | `0.923` | `1.516s` | `0.000` | `0.500` |
-| `flan-t5-small` | `agentic_corrective` | `0.733` | `1.000` | `1.152s` | `0.400` | `1.000` |
-| `flan-t5-small` | `standard` | `0.600` | `0.923` | `0.889s` | `0.000` | `0.500` |
-| `qwen2.5-0.5b-instruct` | `agentic_corrective` | `0.867` | `1.000` | `12.694s` | `0.267` | `0.500` |
-| `qwen2.5-0.5b-instruct` | `standard` | `0.733` | `0.923` | `5.089s` | `0.000` | `0.500` |
-
-### Leaderboard (`0.80 * quality + 0.20 * speed_score`)
-
-| Rank | Model | Quality | Refusal Rate | Avg Latency | Speed Score | Final Score |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: |
-| **1** | `flan-t5-small` | `0.733` | `1.000` | `1.152s` | `1.000` | **`0.787`** |
-| **2** | `flan-t5-base` | `0.867` | `1.000` | `3.102s` | `0.372` | **`0.768`** |
-| **3** | `qwen2.5-0.5b-instruct` | `0.867` | `0.500` | `12.694s` | `0.091` | **`0.711`** |
-
----
-
-## Project Structure
-
-```text
-.
+Agentic & Corrective RAG System for Course Q&AAn end-to-end Agentic & Corrective Retrieval-Augmented Generation (RAG) question-answering system engineered to run efficiently on CPU across multi-format course materials (PDF, DOCX, CSV, and TXT). The system pairs semantic retrieval in ChromaDB with relevance grading, iterative query rewriting, safe refusal on unsupported queries, multi-step sub-question decomposition, lightweight helper tools, benchmark evaluation, and an interactive Gradio web interface.Kaggle Notebook: Replace REPLACE_WITH_YOUR_KAGGLE_USERNAME/REPLACE_WITH_YOUR_NOTEBOOK_SLUG in the badge and link above with your actual Kaggle notebook URL (e.g., https://www.kaggle.com/code/<username>/<notebook-slug>).Table of ContentsKey CapabilitiesSystem Architecture & WorkflowSupported Data & Indexing PipelineBenchmark Evaluation & ResultsRepository StructureGetting StartedGradio Application GuideEngineering Trade-Offs & NotesKey CapabilitiesAgentic Strategy Planning: Inspects incoming queries and routes execution across direct corrective RAG, multi-step decomposition for comparative/compound questions, content summarization, dataset/catalog analytics, or safe arithmetic evaluation.Corrective RAG Verification Loop: Retrieves top-$k$ candidate chunks, filters against a cosine similarity floor ($\ge 0.20$), validates relevance using a deterministic LLM grader (do_sample=False, yes/no), rewrites queries up to max_rewrites=2 when no verified chunks pass, and returns a controlled refusal (UNANSWERED) when evidence remains insufficient.Multi-Format Course Ingestion: Parses PDF, DOCX, CSV, and TXT course assets into a persistent ChromaDB collection using sentence-transformers/all-MiniLM-L6-v2 embeddings on CPU.Standard vs. Agentic Benchmarking: Evaluates standard single-pass retrieval against agentic_corrective across lightweight models (flan-t5-small, flan-t5-base, and qwen2.5-0.5b-instruct) on a 15-question test suite.Interactive Gradio UI & Containerization: Provides a 3-tab Gradio workspace for live Q&A, dataset inspection and file uploads, and live benchmark execution, alongside a local runner script and a Dockerfile.System Architecture & WorkflowUser Query
+   │
+   ▼
+Agentic Strategy Planner
+   ├── Arithmetic expression ────────▶ calculator_tool (safe AST evaluation)
+   ├── Dataset / catalog stats ──────▶ data_analysis_tool (ChromaDB + tabular stats)
+   ├── Topic / material summary ─────▶ summarizer_tool (graded chunks + concise summary)
+   ├── Comparative / compound query ─▶ multi_step_rag (sub-question decomposition)
+   └── Standard / domain question ───▶ Corrective RAG Loop
+                                         │
+                                         ▼
+                                  Retrieve top-k chunks (cosine, threshold >= 0.20)
+                                         │
+                                         ▼
+                                  LLM Relevance Grader (yes / no)
+                                         │
+                        ┌────────────────┴────────────────┐
+                        ▼                                 ▼
+              Verified chunks found             No verified chunks found
+                        │                                 │
+                        ▼                                 ▼
+             Grounded Answer + Sources      Rewrites left (< max_rewrites)?
+                                              ├── Yes ─▶ Rewrite query & retry
+                                              └── No  ─▶ Safe Refusal (UNANSWERED)
+Supported Data & Indexing PipelineDocument Parsing & Chunking:Covers Machine Learning, Python Programming, and SQL and Databases across PDF, DOCX, CSV, and TXT files (6 source files and 29 chunks in the reference setup).Enforces a maximum chunk size of 500 characters with a 1-sentence overlap.Attaches structured metadata (course, file, type, page, path) to every indexed chunk.Embedding & Vector Store:Generates normalized 384-dimensional embeddings with sentence-transformers/all-MiniLM-L6-v2 on cpu.Persists embeddings and metadata in ./chroma_db using cosine distance.Helper Tools & Multi-Step Reasoning:calculator_tool: Evaluates mathematical expressions safely via Python's ast module without raw eval.data_analysis_tool: Summarizes indexed courses, files, document formats, chunk counts, and average chunk lengths.summarizer_tool: Retrieves and grades relevant chunks before generating a concise 2–4 sentence summary.multi_step_rag: Splits comparative or multi-part questions into focused sub-queries and retrieves/verifies evidence per sub-question.Benchmark Evaluation & ResultsAll candidate models were evaluated on a 15-question test set (test_set.csv) covering direct questions across PDF, TXT, DOCX, and CSV, ambiguous/rewritable queries, multi-step and tool-routed queries, and out-of-scope unanswerable questions.Answerable questions: Scored via expected keyword recall (with 0.0 assigned if falsely refused).Unanswerable questions: Scored 1.0 for safe refusal and 0.0 if answered/hallucinated.Composite leaderboard formula:$$\text{final\_score} = 0.80 \times \text{quality} + 0.20 \times \text{speed\_score}$$where $\text{speed\_score} = \frac{\min(\text{avg\_latency})}{\text{avg\_latency}}$.Standard vs. Agentic Corrective RAGModelModeQualityContext HitAvg LatencyAvg RewritesRefusal Rateflan-t5-baseagentic_corrective0.8670.8463.102s0.6001.000flan-t5-basestandard0.8000.9231.516s0.0000.500flan-t5-smallagentic_corrective0.7331.0001.152s0.4001.000flan-t5-smallstandard0.6000.9230.889s0.0000.500qwen2.5-0.5b-instructagentic_corrective0.8671.00012.694s0.2670.500qwen2.5-0.5b-instructstandard0.7330.9235.089s0.0000.500Model LeaderboardRankModelQualityRefusal RateAvg LatencySpeed ScoreFinal Score1flan-t5-small0.7331.0001.152s1.0000.7872flan-t5-base0.8671.0003.102s0.3720.7683qwen2.5-0.5b-instruct0.8670.50012.694s0.0910.711Repository Structure.
 ├── gradio_app/
 │   ├── app.py              # 3-tab Gradio application (port 7860)
-│   └── best_model.json     # Benchmark summary and selected model config
-├── run_local.py            # Initializes ChromaDB if empty and starts Gradio
-├── Dockerfile              # Container image based on python:3.11-slim (port 7860)
+│   └── best_model.json     # Benchmark summary and selected model configuration
+├── run_local.py            # Initializes ChromaDB if empty and launches Gradio
+├── Dockerfile              # Container definition based on python:3.11-slim (port 7860)
 ├── requirements.txt        # Python dependencies
-└── .gitignore              # Ignores local DB, saved model weights, and large artifacts
+└── .gitignore              # Excludes local vector store, model weights, and build artifacts
+Getting StartedPrerequisitesPython 3.11+ and pip (or Docker if running in a container).Internet access on first run to download the embedding model (sentence-transformers/all-MiniLM-L6-v2) and selected LLM weights from Hugging Face if not already cached.1. Clone & Install Dependenciesgit clone <YOUR_GITHUB_REPOSITORY_URL>
+cd <YOUR_REPOSITORY_FOLDER>
+pip install -r requirements.txt
+2. Run Locallypython run_local.py
+run_local.py automatically initializes the ChromaDB collection if it is empty and starts the Gradio server on http://0.0.0.0:7860.3. Run with Dockerdocker build -t agentic-rag-course-qa .
+docker run -p 7860:7860 agentic-rag-course-qa
+Gradio Application GuideAgentic RAG Q&A Assistant: Choose a model, toggle Agentic Corrective mode on or off, filter retrieval by course, tune top_k and max_rewrites, and inspect the generated answer, source citations, execution trace, and verified chunks.Original Dataset & Document Upload: Inspect the file catalog, sql_glossary.csv, raw syllabus texts, and indexed chunks, or upload new PDF, DOCX, CSV, and TXT files to index them directly into ChromaDB.15-Question Test Set & Model Benchmark: Review the benchmark leaderboard and evaluation questions, and click Run 15-Question Test Set Live to execute evaluations interactively.Engineering Trade-Offs & NotesSpeed vs. Generation Quality: flan-t5-small achieves the highest composite score (0.787) due to fast CPU inference (1.152s average latency) and 1.000 refusal accuracy, while flan-t5-base achieves stronger answer quality (0.867) with 1.000 refusal accuracy at 3.102s average latency.Strict Relevance Grading: A strict yes/no grader combined with query rewriting reduces hallucination on out-of-scope questions, though it can occasionally reject partially relevant chunks on comparative sub-queries.
