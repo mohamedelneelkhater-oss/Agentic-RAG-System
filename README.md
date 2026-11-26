@@ -121,6 +121,8 @@ Generated at run time and intentionally not committed: `chroma_db/` (vector stor
 The slowest cell is the benchmark, because `Qwen2.5-0.5B` is much slower than the T5 models on CPU.
 
 The final cells are optional helpers that package the project and push it to GitHub. They read a `GITHUB_TOKEN` from **Kaggle Secrets**, so never paste a token into the notebook or commit it.
+**Kaggle Notebook:** Explore and reproduce the end-to-end pipeline, evaluation results, and interactive app on Kaggle: [https://www.kaggle.com/code/mohamedelneel](https://www.kaggle.com/code/mohamedelneel/agentic-rag-system)
+
 
 ### Run outside Kaggle
 
